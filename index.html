@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kỳ Thi HSK Của Anya - Waku Waku!</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap');
+        
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            background-color: #fff0f5; /* Nền hồng siêu nhạt */
+            background-image: 
+                radial-gradient(#ffb6c1 3px, transparent 3px),
+                radial-gradient(#ffb6c1 3px, transparent 3px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            color: #4a4a4a;
+        }
+
+        /* Phong cách Kawaii (Mềm mại, dễ thương, bóng mờ) */
+        .kawaii-card {
+            background-color: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 15px 35px rgba(255, 182, 193, 0.4), 0 5px 15px rgba(0,0,0,0.05);
+            border: 4px solid #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .kawaii-btn {
+            border-radius: 9999px;
+            font-weight: 900;
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kawaii-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+        }
+        
+        .kawaii-btn:active {
+            transform: translateY(2px) scale(0.98);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-pink { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .btn-teal { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+
+        .image-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .option-btn {
+            border: 3px solid #fce7f3;
+            border-radius: 1.5rem;
+            transition: all 0.3s;
+            background: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            color: #555;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        .option-btn:hover {
+            border-color: #ff9a9e;
+            background-color: #fff0f5;
+            transform: translateY(-3px);
+            color: #ff4757;
+            box-shadow: 0 8px 15px rgba(255, 154, 158, 0.3);
+        }
+
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% {transform: translate3d(-2px, 0, 0);} 20%, 80% {transform: translate3d(4px, 0, 0);} 30%, 50%, 70% {transform: translate3d(-6px, 0, 0);} 40%, 60% {transform: translate3d(6px, 0, 0);} }
+        
+        /* Bảng review */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { padding: 16px; text-align: left; background-color: #ff9a9e; color: white; border-radius: 8px; }
+        td { padding: 16px; background: white; border-top: 2px solid #fff0f5; border-bottom: 2px solid #fff0f5; }
+        td:first-child { border-left: 2px solid #fff0f5; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+        td:last-child { border-right: 2px solid #fff0f5; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+
+        /* SweetAlert Custom Kawaii */
+        .swal2-popup { border-radius: 2rem !important; padding: 2rem !important; box-shadow: 0 20px 50px rgba(255, 154, 158, 0.5) !important; border: 5px solid #fff !important; background: #fff0f5 !important; }
+        .swal2-title { color: #ff4757 !important; font-family: 'Quicksand', sans-serif !important; font-weight: 900 !important; }
+        .swal2-image { border-radius: 1.5rem; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid white; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 lg:p-8" id="main-body">
+
+    <!-- Audio Player ẩn -->
+    <audio id="tts-audio" class="hidden"></audio>
+
+    <!-- ================= MÀN HÌNH BẮT ĐẦU ================= -->
+    <div id="start-screen" class="w-full max-w-6xl flex flex-col lg:flex-row gap-10 items-center relative z-10">
+        
+        <!-- Nửa trái: ẢNH ANYA HEEEHHE -->
+        <div class="w-full lg:w-1/2 relative image-float">
+            <div class="absolute inset-0 bg-pink-300 rounded-[3rem] blur-xl opacity-50 transform translate-y-4"></div>
+            <img src="images-5_2.jpeg" class="w-full h-[400px] lg:h-[600px] object-cover rounded-[3rem] border-8 border-white shadow-2xl relative z-10" alt="Anya Heeehhe">
+            
+            <!-- Badge góc -->
+            <div class="absolute -top-6 -right-6 bg-white p-2 rounded-full shadow-xl z-20 transform rotate-12">
+                <img src="images-2.jpeg" class="w-24 h-24 object-cover rounded-full border-4 border-pink-400" alt="Anya Smug">
+            </div>
+        </div>
+        
+        <!-- Nửa phải: Nội dung bắt đầu -->
+        <div class="w-full lg:w-1/2 kawaii-card p-8 lg:p-12 text-center lg:text-left bg-white/90 backdrop-blur-sm">
+            
+            <div class="inline-block bg-pink-100 text-pink-600 font-bold px-4 py-2 rounded-full mb-4 text-sm tracking-wider uppercase">
+                <i class="fas fa-star text-yellow-400 mr-2"></i> KỲ THI TRƯỜNG EDEN
+            </div>
+            
+            <h1 class="text-4xl lg:text-6xl font-black text-gray-800 mb-4 leading-tight">Nhiệm Vụ HSK <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500">WAKU WAKU!</span></h1>
+            
+            <div class="bg-gray-50 border-2 border-pink-100 p-6 rounded-3xl mb-10 text-lg shadow-inner text-left">
+                <p class="font-black text-pink-500 mb-4 text-xl flex items-center gap-2">
+                    <i class="fas fa-bell"></i> Lời nhắn từ Anya:
+                </p>
+                <ul class="space-y-4 font-bold text-gray-600">
+                    <li class="flex items-center gap-3 bg-white p-3 rounded-2xl shadow-sm"><i class="fas fa-book-open text-purple-400 text-2xl"></i> Hoàn thành 70 câu hỏi HSK 1 & 2.</li>
+                    <li class="flex items-center gap-3 bg-white p-3 rounded-2xl shadow-sm"><img src="stella.jpg" class="w-8 h-8 rounded-full border border-gray-200" alt="Stella"> Trả lời ĐÚNG nhận 1 Stella chói lóa.</li>
+                    <li class="flex items-center gap-3 bg-white p-3 rounded-2xl shadow-sm"><img src="Tonitrus.png" class="w-8 h-8 object-contain" alt="Tonitrus"> Trả lời SAI bị phạt 1 Tonitrus đáng sợ.</li>
+                    <li class="flex items-center gap-3 bg-white p-3 rounded-2xl shadow-sm"><i class="fas fa-heart text-red-400 text-2xl"></i> Sinh mệnh: <span class="text-red-500 text-2xl font-black">20 ❤️</span></li>
+                </ul>
+            </div>
+
+            <button onclick="startGame()" class="kawaii-btn btn-pink w-full py-5 text-2xl flex items-center justify-center gap-4">
+                Bắt Đầu Làm Bài <i class="fas fa-pencil-alt"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= MÀN HÌNH TRÒ CHƠI ================= -->
+    <div id="game-screen" class="w-full max-w-5xl hidden flex-col h-[95vh] sm:h-[850px] relative z-10">
+        <!-- Ảnh nền Game: Anya toát mồ hôi làm bài -->
+        <div class="fixed inset-0 z-[-1] pointer-events-none opacity-[0.15]">
+            <img src="images-8.jpeg" class="w-full h-full object-cover filter blur-[1px]" alt="Anya Sweating">
+        </div>
+
+        <!-- Thanh HUD Kawaii -->
+        <div class="kawaii-card bg-white/95 p-4 mb-6 flex justify-between items-center z-20">
+            <div class="flex items-center gap-4 bg-red-50 px-4 py-2 rounded-2xl border border-red-100">
+                <img src="images-4_2.jpeg" class="w-14 h-14 object-cover rounded-full border-2 border-red-200 shadow-md" alt="Anya Health">
+                <div>
+                    <div class="text-[10px] font-black text-red-400 uppercase tracking-wider">Sinh Lực</div>
+                    <div class="text-2xl font-black text-red-500" id="lives-display">❤️ 20</div>
+                </div>
+            </div>
+            
+            <div class="text-center flex-1 mx-4">
+                <div class="inline-block bg-purple-50 px-8 py-3 rounded-[2rem] border border-purple-100 shadow-sm">
+                    <div class="text-xs font-black text-purple-400 uppercase tracking-widest mb-1">Tiến Độ</div>
+                    <div class="text-3xl font-black text-purple-600" id="level-display">1/70</div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 bg-yellow-50 px-4 py-2 rounded-2xl border border-yellow-100">
+                <div class="text-right">
+                    <div class="text-[10px] font-black text-yellow-500 uppercase tracking-wider">Stella</div>
+                    <div class="text-3xl font-black text-yellow-500" id="score-display">0</div>
+                </div>
+                <img src="stella.jpg" class="w-14 h-14 object-cover rounded-full shadow-md" alt="Stella HUD">
+            </div>
+        </div>
+
+        <!-- Khung Câu hỏi -->
+        <div class="kawaii-card flex-1 p-6 md:p-10 overflow-y-auto bg-white/95 relative z-20 flex flex-col" id="quiz-area">
+            <!-- Nội dung render qua JS -->
+        </div>
+    </div>
+
+    <!-- ================= MÀN HÌNH KẾT THÚC ================= -->
+    <div id="end-screen" class="w-full max-w-4xl hidden flex-col items-center relative z-10">
+        
+        <div class="w-full h-[350px] md:h-[500px] mb-12 relative image-float">
+            <img id="end-img" src="" class="w-full h-full object-cover rounded-[3rem] border-8 border-white shadow-2xl" alt="Result Image">
+            
+            <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 px-10 py-4 rounded-[2rem] shadow-xl text-3xl md:text-4xl font-black uppercase tracking-widest whitespace-nowrap border-4 border-white" id="end-title">
+                Kết Quả
+            </div>
+        </div>
+        
+        <div class="kawaii-card w-full p-8 md:p-12 text-center bg-white/95">
+            <div class="bg-yellow-50 border-4 border-yellow-200 p-8 rounded-[3rem] mb-10 inline-block shadow-lg">
+                <p class="text-yellow-600 font-black mb-4 uppercase text-xl">Thành Tích Đạt Được</p>
+                <div class="text-7xl font-black text-yellow-500 flex items-center justify-center gap-6">
+                    <span id="final-score" class="drop-shadow-md">0</span>
+                    <img src="stella.jpg" class="w-20 h-20 rounded-full shadow-lg" alt="Stella Final">
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-6 w-full max-w-2xl mx-auto">
+                <button onclick="showReview()" class="kawaii-btn btn-teal flex-1 py-5 text-xl flex items-center justify-center gap-3">
+                    <i class="fas fa-clipboard-list"></i> Xem Lỗi Sai
+                </button>
+                <button onclick="location.reload()" class="kawaii-btn btn-pink flex-1 py-5 text-xl flex items-center justify-center gap-3">
+                    <i class="fas fa-redo-alt"></i> Thi Lại Từ Đầu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MÀN HÌNH XEM LẠI ================= -->
+    <div id="review-screen" class="w-full max-w-6xl hidden flex-col h-[90vh] z-10">
+        <div class="kawaii-card bg-pink-50 p-6 flex justify-between items-center mb-6 rounded-b-none border-b-0">
+            <div class="flex items-center gap-6">
+                <img src="images-3_2.jpeg" class="w-20 h-20 rounded-full border-4 border-white object-cover shadow-lg" alt="Anya Pointing">
+                <div>
+                    <h2 class="text-3xl font-black text-pink-500 uppercase tracking-widest">Sổ Đầu Bài Của Anya</h2>
+                    <p class="text-gray-500 font-bold">Hãy xem mình đã làm sai ở đâu nhé!</p>
+                </div>
+            </div>
+            <button onclick="closeReview()" class="kawaii-btn bg-white text-gray-700 font-black px-8 py-4 rounded-full shadow hover:bg-gray-100">QUAY LẠI</button>
+        </div>
+        
+        <div class="kawaii-card flex-1 overflow-y-auto bg-white/95 p-6 rounded-t-none border-t-0">
+            <table class="w-full text-sm md:text-base">
+                <thead>
+                    <tr>
+                        <th class="w-16 text-center">STT</th>
+                        <th>Dạng Bài</th>
+                        <th>Câu Hỏi</th>
+                        <th>Bạn Chọn</th>
+                        <th>Đáp Án Đúng</th>
+                        <th class="text-center w-28">Kết Quả</th>
+                    </tr>
+                </thead>
+                <tbody id="review-list" class="text-gray-700 font-bold">
+                    <!-- Render JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // DỮ LIỆU BỘ 70 CÂU HỎI HSK 1 & 2
+        const questions = [
+            // --- TRẮC NGHIỆM (20 Câu) ---
+            { type: 'quiz', text: '早上好', pinyin: 'zǎo shang hǎo', options: ['Chào buổi sáng', 'Chào buổi tối', 'Tạm biệt', 'Cảm ơn'], correct: 0 },
+            { type: 'quiz', text: '对不起', pinyin: 'duì bu qǐ', options: ['Cảm ơn', 'Xin lỗi', 'Đúng rồi', 'Không sao'], correct: 1 },
+            { type: 'quiz', text: '名字', pinyin: 'míng zi', options: ['Tuổi tác', 'Quốc tịch', 'Nghề nghiệp', 'Tên gọi'], correct: 3 },
+            { type: 'quiz', text: '漂亮', pinyin: 'piào liang', options: ['Xấu xí', 'Xinh đẹp', 'Thông minh', 'Ngốc nghếch'], correct: 1 },
+            { type: 'quiz', text: '喜欢', pinyin: 'xǐ huan', options: ['Ghét', 'Thích', 'Yêu', 'Nhớ'], correct: 1 },
+            { type: 'quiz', text: '颜色', pinyin: 'yán sè', options: ['Kích thước', 'Màu sắc', 'Hình dáng', 'Hương vị'], correct: 1 },
+            { type: 'quiz', text: '电脑', pinyin: 'diàn nǎo', options: ['Tivi', 'Điện thoại', 'Máy tính', 'Tủ lạnh'], correct: 2 },
+            { type: 'quiz', text: '去年', pinyin: 'qù nián', options: ['Năm ngoái', 'Năm nay', 'Sang năm', 'Mỗi năm'], correct: 0 },
+            { type: 'quiz', text: '便宜', pinyin: 'pián yi', options: ['Đắt', 'Rẻ', 'Đẹp', 'Xấu'], correct: 1 },
+            { type: 'quiz', text: '手机', pinyin: 'shǒu jī', options: ['Máy tính', 'Điện thoại', 'Tivi', 'Đồng hồ'], correct: 1 },
+            { type: 'quiz', text: '累', pinyin: 'lèi', options: ['Mệt', 'Đói', 'Khát', 'No'], correct: 0 },
+            { type: 'quiz', text: '跑步', pinyin: 'pǎo bù', options: ['Đi bộ', 'Chạy bộ', 'Bơi lội', 'Đá bóng'], correct: 1 },
+            { type: 'quiz', text: '房间', pinyin: 'fáng jiān', options: ['Ngôi nhà', 'Căn phòng', 'Công ty', 'Cửa hàng'], correct: 1 },
+            { type: 'quiz', text: '告诉', pinyin: 'gào su', options: ['Hỏi', 'Nói cho biết', 'Nghe', 'Trả lời'], correct: 1 },
+            { type: 'quiz', text: '认识', pinyin: 'rèn shi', options: ['Quen biết', 'Quên', 'Gặp gỡ', 'Tìm kiếm'], correct: 0 },
+            { type: 'quiz', text: '下雪', pinyin: 'xià xuě', options: ['Trời mưa', 'Trời nắng', 'Tuyết rơi', 'Nhiều mây'], correct: 2 },
+            { type: 'quiz', text: '红', pinyin: 'hóng', options: ['Đỏ', 'Vàng', 'Xanh', 'Trắng'], correct: 0 },
+            { type: 'quiz', text: '已经', pinyin: 'yǐ jīng', options: ['Đã (xong)', 'Sẽ', 'Đang', 'Chưa'], correct: 0 },
+            { type: 'quiz', text: '找', pinyin: 'zhǎo', options: ['Tìm/Thối tiền', 'Mất', 'Giấu', 'Mua'], correct: 0 },
+            { type: 'quiz', text: '慢', pinyin: 'màn', options: ['Nhanh', 'Chậm', 'Dừng', 'Đi'], correct: 1 },
+
+            // --- LUYỆN NGHE (15 Câu) ---
+            { type: 'listening', text: '没关系', pinyin: 'méi guān xi', options: ['Không có gì', 'Xin lỗi', 'Tạm biệt', 'Xin chào'], correct: 0 },
+            { type: 'listening', text: '昨天', pinyin: 'zuó tiān', options: ['Hôm qua', 'Hôm nay', 'Ngày mai', 'Năm nay'], correct: 0 },
+            { type: 'listening', text: '贵', pinyin: 'guì', options: ['Đắt', 'Rẻ', 'Nặng', 'Nhẹ'], correct: 0 },
+            { type: 'listening', text: '生病', pinyin: 'shēng bìng', options: ['Bị ốm', 'Khỏe mạnh', 'Tức giận', 'Khóc'], correct: 0 },
+            { type: 'listening', text: '游泳', pinyin: 'yóu yǒng', options: ['Chạy bộ', 'Bơi lội', 'Nhảy múa', 'Hát'], correct: 1 },
+            { type: 'listening', text: '左边', pinyin: 'zuǒ biān', options: ['Bên trái', 'Bên phải', 'Đằng trước', 'Đằng sau'], correct: 0 },
+            { type: 'listening', text: '帮助', pinyin: 'bāng zhù', options: ['Làm phiền', 'Giúp đỡ', 'Chào hỏi', 'Tạm biệt'], correct: 1 },
+            { type: 'listening', text: '黑', pinyin: 'hēi', options: ['Màu trắng', 'Màu đen', 'Màu đỏ', 'Màu xanh'], correct: 1 },
+            { type: 'listening', text: '可能', pinyin: 'kě néng', options: ['Chắc chắn', 'Có thể', 'Không thể', 'Phải'], correct: 1 },
+            { type: 'listening', text: '机场', pinyin: 'jī chǎng', options: ['Bãi đỗ xe', 'Sân bay', 'Khách sạn', 'Nhà hàng'], correct: 1 },
+            { type: 'listening', text: '考试', pinyin: 'kǎo shì', options: ['Làm bài tập', 'Thi/Kiểm tra', 'Học bài', 'Đọc sách'], correct: 1 },
+            { type: 'listening', text: '等', pinyin: 'děng', options: ['Đi', 'Đứng', 'Đợi', 'Ngồi'], correct: 2 },
+            { type: 'listening', text: '远', pinyin: 'yuǎn', options: ['Xa', 'Gần', 'Cao', 'Thấp'], correct: 0 },
+            { type: 'listening', text: '老师', pinyin: 'lǎo shī', options: ['Học sinh', 'Bác sĩ', 'Giám đốc', 'Giáo viên'], correct: 3 },
+            { type: 'listening', text: '明天', pinyin: 'míng tiān', options: ['Hôm qua', 'Hôm nay', 'Ngày mai', 'Ngày kia'], correct: 2 },
+
+            // --- NỐI TỪ (15 Câu) ---
+            { type: 'matching', pairs: [{zh:'老师',vi:'Giáo viên', p:'lǎo shī'}, {zh:'学生',vi:'Học sinh', p:'xué sheng'}, {zh:'学校',vi:'Trường học', p:'xué xiào'}, {zh:'医生',vi:'Bác sĩ', p:'yī shēng'}] },
+            { type: 'matching', pairs: [{zh:'星期一',vi:'Thứ hai', p:'xīng qī yī'}, {zh:'星期天',vi:'Chủ nhật', p:'xīng qī tiān'}, {zh:'上午',vi:'Buổi sáng', p:'shàng wǔ'}, {zh:'晚上',vi:'Buổi tối', p:'wǎn shang'}] },
+            { type: 'matching', pairs: [{zh:'杯子',vi:'Cái cốc', p:'bēi zi'}, {zh:'钱',vi:'Tiền', p:'qián'}, {zh:'苹果',vi:'Quả táo', p:'píng guǒ'}, {zh:'西瓜',vi:'Dưa hấu', p:'xī guā'}] },
+            { type: 'matching', pairs: [{zh:'快乐',vi:'Vui vẻ', p:'kuài lè'}, {zh:'忙',vi:'Bận', p:'máng'}, {zh:'休息',vi:'Nghỉ ngơi', p:'xiū xi'}, {zh:'问题',vi:'Vấn đề', p:'wèn tí'}] },
+            { type: 'matching', pairs: [{zh:'起床',vi:'Thức dậy', p:'qǐ chuáng'}, {zh:'睡觉',vi:'Đi ngủ', p:'shuì jiào'}, {zh:'准备',vi:'Chuẩn bị', p:'zhǔn bèi'}, {zh:'工作',vi:'Làm việc', p:'gōng zuò'}] },
+            { type: 'matching', pairs: [{zh:'外边',vi:'Bên ngoài', p:'wài biān'}, {zh:'里',vi:'Bên trong', p:'lǐ'}, {zh:'右边',vi:'Bên phải', p:'yòu biān'}, {zh:'路',vi:'Con đường', p:'lù'}] },
+            { type: 'matching', pairs: [{zh:'大家',vi:'Mọi người', p:'dà jiā'}, {zh:'男人',vi:'Đàn ông', p:'nán rén'}, {zh:'妻子',vi:'Vợ', p:'qī zi'}, {zh:'丈夫',vi:'Chồng', p:'zhàng fu'}] },
+            { type: 'matching', pairs: [{zh:'晴',vi:'Trời nắng', p:'qíng'}, {zh:'阴',vi:'Trời râm', p:'yīn'}, {zh:'白',vi:'Màu trắng', p:'bái'}, {zh:'热',vi:'Nóng', p:'rè'}] },
+            { type: 'matching', pairs: [{zh:'别',vi:'Đừng', p:'bié'}, {zh:'再',vi:'Lại/Nữa', p:'zài'}, {zh:'也',vi:'Cũng', p:'yě'}, {zh:'真',vi:'Thật sự', p:'zhēn'}] },
+            { type: 'matching', pairs: [{zh:'公共汽车',vi:'Xe buýt', p:'gōng gòng qì chē'}, {zh:'出租车',vi:'Taxi', p:'chū zū chē'}, {zh:'自行车',vi:'Xe đạp', p:'zì xíng chē'}, {zh:'走路',vi:'Đi bộ', p:'zǒu lù'}] },
+            { type: 'matching', pairs: [{zh:'懂',vi:'Hiểu', p:'dǒng'}, {zh:'完',vi:'Xong/Hết', p:'wán'}, {zh:'错',vi:'Sai', p:'cuò'}, {zh:'对',vi:'Đúng', p:'duì'}] },
+            { type: 'matching', pairs: [{zh:'事情',vi:'Sự việc', p:'shì qing'}, {zh:'时间',vi:'Thời gian', p:'shí jiān'}, {zh:'小时',vi:'Tiếng/Giờ', p:'xiǎo shí'}, {zh:'时候',vi:'Lúc/Khi', p:'shí hou'}] },
+            { type: 'matching', pairs: [{zh:'第一',vi:'Thứ nhất', p:'dì yī'}, {zh:'两',vi:'Hai (số lượng)', p:'liǎng'}, {zh:'千',vi:'Nghìn', p:'qiān'}, {zh:'些',vi:'Một vài', p:'xiē'}] },
+            { type: 'matching', pairs: [{zh:'新',vi:'Mới', p:'xīn'}, {zh:'旧',vi:'Cũ (đồ vật)', p:'jiù'}, {zh:'长',vi:'Dài', p:'cháng'}, {zh:'高',vi:'Cao', p:'gāo'}] },
+            { type: 'matching', pairs: [{zh:'大',vi:'Lớn', p:'dà'}, {zh:'小',vi:'Nhỏ', p:'xiǎo'}, {zh:'多',vi:'Nhiều', p:'duō'}, {zh:'少',vi:'Ít', p:'shǎo'}] },
+
+            // --- XẾP CÂU (20 Câu) ---
+            { type: 'builder', text: 'Cô ấy là giáo viên tiếng Trung của tôi.', words: ['她', '是', '我的', '汉语', '老师', '。'], pinyin: ['tā', 'shì', 'wǒ de', 'hàn yǔ', 'lǎo shī', '。'] },
+            { type: 'builder', text: 'Bây giờ là 8 giờ rưỡi.', words: ['现在', '是', '八点', '半', '。'], pinyin: ['xiàn zài', 'shì', 'bā diǎn', 'bàn', '。'] },
+            { type: 'builder', text: 'Cái áo này bao nhiêu tiền?', words: ['这件', '衣服', '多少', '钱', '？'], pinyin: ['zhè jiàn', 'yī fu', 'duō shao', 'qián', '？'] },
+            { type: 'builder', text: 'Tôi cảm thấy rất vui.', words: ['我', '觉得', '很', '高兴', '。'], pinyin: ['wǒ', 'jué de', 'hěn', 'gāo xìng', '。'] },
+            { type: 'builder', text: 'Bạn đang làm gì vậy?', words: ['你', '在', '做', '什么', '呢', '？'], pinyin: ['nǐ', 'zài', 'zuò', 'shén me', 'ne', '？'] },
+            { type: 'builder', text: 'Bệnh viện ở phía trước.', words: ['医院', '在', '前面', '。'], pinyin: ['yī yuàn', 'zài', 'qián miàn', '。'] },
+            { type: 'builder', text: 'Anh ấy giới thiệu cho tôi một người bạn.', words: ['他', '给', '我', '介绍', '了', '一个', '朋友', '。'], pinyin: ['tā', 'gěi', 'wǒ', 'jiè shào', 'le', 'yí ge', 'péng you', '。'] },
+            { type: 'builder', text: 'Hôm nay trời rất lạnh.', words: ['今天', '天气', '很', '冷', '。'], pinyin: ['jīn tiān', 'tiān qì', 'hěn', 'lěng', '。'] },
+            { type: 'builder', text: 'Bởi vì trời mưa, nên tôi không đi.', words: ['因为', '下雨', '，', '所以', '我', '没去', '。'], pinyin: ['yīn wèi', 'xià yǔ', '，', 'suǒ yǐ', 'wǒ', 'méi qù', '。'] },
+            { type: 'builder', text: 'Chúng ta đi du lịch Bắc Kinh đi.', words: ['我们', '去', '北京', '旅游', '吧', '。'], pinyin: ['wǒ men', 'qù', 'běi jīng', 'lǚ yóu', 'ba', '。'] },
+            { type: 'builder', text: 'Món ăn này ăn rất ngon.', words: ['这个', '菜', '很', '好吃', '。'], pinyin: ['zhè ge', 'cài', 'hěn', 'hǎo chī', '。'] },
+            { type: 'builder', text: 'Cho tôi xem thử đi.', words: ['让', '我', '看看', '吧', '。'], pinyin: ['ràng', 'wǒ', 'kàn kan', 'ba', '。'] },
+            { type: 'builder', text: 'Quyển sách đó của ai?', words: ['那', '本书', '是', '谁', '的', '？'], pinyin: ['nà', 'běn shū', 'shì', 'shuí', 'de', '？'] },
+            { type: 'builder', text: 'Mời ngồi.', words: ['请', '坐', '。'], pinyin: ['qǐng', 'zuò', '。'] },
+            { type: 'builder', text: 'Tôi rất thích ăn táo.', words: ['我', '很', '喜欢', '吃', '苹果', '。'], pinyin: ['wǒ', 'hěn', 'xǐ huan', 'chī', 'píng guǒ', '。'] },
+            { type: 'builder', text: 'Quyển sách này rất hay.', words: ['这', '本书', '很', '好看', '。'], pinyin: ['zhè', 'běn shū', 'hěn', 'hǎo kàn', '。'] },
+            { type: 'builder', text: 'Anh ấy đi vắng rồi.', words: ['他', '不', '在', '家', '。'], pinyin: ['tā', 'bù', 'zài', 'jiā', '。'] },
+            { type: 'builder', text: 'Hôm nay thứ mấy?', words: ['今天', '星期', '几', '？'], pinyin: ['jīn tiān', 'xīng qī', 'jǐ', '？'] },
+            { type: 'builder', text: 'Bạn là người nước nào?', words: ['你', '是', '哪', '国', '人', '？'], pinyin: ['nǐ', 'shì', 'nǎ', 'guó', 'rén', '？'] },
+            { type: 'builder', text: 'Xin chào, rất vui được gặp bạn.', words: ['你好', '，', '很', '高兴', '认识', '你', '。'], pinyin: ['nǐ hǎo', '，', 'hěn', 'gāo xìng', 'rèn shi', 'nǐ', '。'] }
+        ];
+
+        let maxLives = 20; 
+        let lives = maxLives;
+        let score = 0;
+        let currentQuestionIndex = 0;
+        let gameHistory = []; 
+
+        let builderSelectedWords = [];
+        let matchingSelected = null;
+        let matchingCompleted = 0;
+        let currentMatchingPairs = [];
+
+        // Hệ thống Audio Kép
+        function playTTS(text) {
+            const url = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=zh-CN&q=${encodeURIComponent(text)}`;
+            const audio = document.getElementById('tts-audio');
+            audio.src = url;
+            audio.playbackRate = 0.85; 
+            
+            audio.play().then(() => {
+                audio.playbackRate = 0.85; 
+            }).catch(err => {
+                console.warn("Google TTS bị chặn, chuyển sang giọng đọc thiết bị:", err);
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    let msg = new SpeechSynthesisUtterance(text);
+                    msg.lang = 'zh-CN'; 
+                    msg.rate = 0.85; 
+                    window.speechSynthesis.speak(msg);
+                }
+            });
+        }
+
+        // BẮT ĐẦU GAME - Hàm đã được sửa lỗi trộn mảng an toàn
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            document.getElementById('game-screen').classList.add('flex');
+            
+            lives = maxLives;
+            score = 0;
+            currentQuestionIndex = 0;
+            gameHistory = [];
+            
+            // Xáo trộn trực tiếp trên mảng gốc an toàn bằng hàm sort
+            questions.sort(() => Math.random() - 0.5); 
+            
+            updateHUD();
+            loadQuestion();
+        }
+
+        function updateHUD() {
+            document.getElementById('lives-display').innerText = `❤️ ${lives}`;
+            document.getElementById('level-display').innerText = `${currentQuestionIndex + 1}/${questions.length}`;
+            document.getElementById('score-display').innerText = score;
+        }
+
+        function recordHistory(type, questionContent, userAnswer, correctAnswer, isCorrect) {
+            gameHistory.push({ type: type, question: questionContent, userAnswer: userAnswer, correctAnswer: correctAnswer, isCorrect: isCorrect });
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) { endGame(true); return; }
+            updateHUD();
+            const q = questions[currentQuestionIndex];
+            const area = document.getElementById('quiz-area');
+            area.innerHTML = '';
+            
+            if (q.type === 'quiz') renderQuiz(q, area);
+            else if (q.type === 'listening') renderListening(q, area);
+            else if (q.type === 'builder') renderBuilder(q, area);
+            else if (q.type === 'matching') renderMatching(q, area);
+        }
+
+        function handleWrong(correctAnswerText) {
+            lives--;
+            updateHUD();
+            
+            const area = document.getElementById('quiz-area');
+            area.classList.add('shake');
+            setTimeout(() => area.classList.remove('shake'), 500);
+
+            if (lives <= 0) {
+                // Thua: Dùng ảnh mặt khóc/kinh tởm
+                Swal.fire({
+                    title: 'OÁI... RỚT MẤT TIÊU!',
+                    text: 'Anya bị phạt 20 Tonitrus rồi 😭',
+                    imageUrl: 'images-9.jpeg',
+                    imageWidth: 300,
+                    imageAlt: 'Lose image',
+                    confirmButtonText: 'Xem Sổ Đầu Bài',
+                    confirmButtonColor: '#ff4757',
+                    background: '#fff0f5',
+                    customClass: { popup: 'kawaii-card' }
+                }).then(() => endGame(false));
+            } else {
+                // Sai 1 câu: Dùng ảnh Anya hốt hoảng
+                Swal.fire({
+                    title: 'Tonitrus! ⚡',
+                    html: `Đáp án đúng là:<br><b class="text-3xl text-red-500 block mt-4 bg-white p-3 rounded-2xl shadow-sm">${correctAnswerText}</b>`,
+                    imageUrl: 'images-7_2.jpeg',
+                    imageWidth: 250,
+                    imageAlt: 'Anya Shock',
+                    confirmButtonText: 'Làm Lại Nào!',
+                    confirmButtonColor: '#ff9a9e',
+                    allowOutsideClick: false,
+                    background: '#fff0f5',
+                    customClass: { popup: 'kawaii-card' }
+                }).then(() => {
+                    if (questions[currentQuestionIndex].type !== 'matching') {
+                        currentQuestionIndex++; loadQuestion();
+                    } else { resetMatchingSelection(); }
+                });
+            }
+        }
+
+        function handleCorrect(readText) {
+            score += 1;
+            updateHUD();
+            if(readText) playTTS(readText);
+        }
+
+        function renderQuiz(q, container) {
+            container.innerHTML = `
+                <div class="text-xs font-black text-pink-400 mb-2 tracking-widest uppercase bg-pink-50 inline-block px-4 py-2 rounded-full self-start">Đọc Hiểu</div>
+                <div class="flex-1 flex flex-col justify-center items-center">
+                    <div class="text-7xl md:text-9xl font-black text-gray-800 mt-4 mb-4 drop-shadow-sm text-center">${q.text}</div>
+                    <div class="text-2xl md:text-4xl font-bold text-pink-500 mb-8 bg-white shadow-sm inline-block px-6 py-2 border-2 border-pink-100 rounded-2xl">[ ${q.pinyin} ]</div>
+                    
+                    <button onclick="playTTS('${q.text}')" class="kawaii-btn btn-teal rounded-full w-20 h-20 text-3xl mb-10 flex items-center justify-center">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl mx-auto mt-auto">
+                        ${q.options.map((opt, i) => `<button onclick="checkQuiz(${i})" class="option-btn p-5 md:p-6 text-xl md:text-2xl">${opt}</button>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        function checkQuiz(selectedIndex) {
+            const q = questions[currentQuestionIndex];
+            const isCorrect = selectedIndex === q.correct;
+            const correctText = q.options[q.correct];
+            recordHistory('Trắc nghiệm', `${q.text} (${q.pinyin})`, q.options[selectedIndex], correctText, isCorrect);
+            if (isCorrect) { 
+                handleCorrect(q.text); 
+                // Có thể show 1 ảnh cười nhẹ (imagesss.jpeg) popup nhanh ở đây nếu thích, nhưng delay đủ rồi
+                setTimeout(() => { currentQuestionIndex++; loadQuestion(); }, 1500); 
+            } 
+            else { handleWrong(correctText); }
+        }
+
+        function renderListening(q, container) {
+            container.innerHTML = `
+                <div class="text-xs font-black text-blue-400 mb-6 tracking-widest uppercase bg-blue-50 inline-block px-4 py-2 rounded-full self-start">Luyện Nghe</div>
+                <div class="flex-1 flex flex-col justify-center items-center">
+                    <button onclick="playTTS('${q.text}')" class="kawaii-btn btn-pink rounded-full w-40 h-40 md:w-48 md:h-48 text-6xl mb-12 flex items-center justify-center shadow-lg image-float">
+                        <i class="fas fa-headphones"></i>
+                    </button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl mx-auto mt-auto">
+                        ${q.options.map((opt, i) => `<button onclick="checkListening(${i})" class="option-btn p-5 md:p-6 text-xl md:text-2xl">${opt}</button>`).join('')}
+                    </div>
+                </div>
+            `;
+            setTimeout(() => playTTS(q.text), 500);
+        }
+        function checkListening(selectedIndex) {
+            const q = questions[currentQuestionIndex];
+            const isCorrect = selectedIndex === q.correct;
+            const correctText = `${q.options[q.correct]} (Chữ: ${q.text} - ${q.pinyin})`;
+            recordHistory('Luyện Nghe', `Audio: ${q.text}`, q.options[selectedIndex], correctText, isCorrect);
+            if (isCorrect) { handleCorrect(q.text); setTimeout(() => { currentQuestionIndex++; loadQuestion(); }, 1500); } 
+            else { handleWrong(correctText); }
+        }
+
+        function renderBuilder(q, container) {
+            builderSelectedWords = [];
+            let mixed = q.words.map((w, i) => ({w, p: q.pinyin[i]})).sort(() => Math.random() - 0.5);
+            container.innerHTML = `
+                <div class="text-xs font-black text-green-400 mb-4 tracking-widest uppercase bg-green-50 inline-block px-4 py-2 rounded-full self-start">Sắp Xếp Câu</div>
+                <div class="text-2xl md:text-3xl font-bold text-gray-700 mb-8 bg-gray-50 inline-block px-8 py-4 border-2 border-dashed border-gray-300 rounded-3xl mx-auto text-center">"${q.text}"</div>
+                
+                <div id="builder-answer" class="min-h-[140px] w-full max-w-4xl mx-auto bg-white border-4 border-dashed border-pink-200 rounded-[2rem] p-6 flex flex-wrap gap-3 justify-center mb-10 shadow-inner"></div>
+                
+                <div id="builder-options" class="flex flex-wrap gap-4 justify-center w-full max-w-4xl mx-auto">
+                    ${mixed.map((item, i) => `<button onclick="selectBuilderWord(this, '${item.w}', '${item.p}')" class="kawaii-btn bg-white border-2 border-gray-100 px-6 py-4 text-3xl font-black text-gray-800 flex flex-col items-center shadow-md"><span>${item.w}</span><span class="text-sm text-pink-400 font-bold mt-1">${item.p}</span></button>`).join('')}
+                </div>
+            `;
+        }
+        function selectBuilderWord(btn, word, pinyin) {
+            btn.classList.add('hidden');
+            builderSelectedWords.push({w: word, p: pinyin});
+            const ansDiv = document.getElementById('builder-answer');
+            const newBtn = document.createElement('button');
+            newBtn.className = "kawaii-btn btn-teal px-6 py-4 text-3xl font-black flex flex-col items-center shadow-md animate-[popIn_0.2s_ease-out]";
+            newBtn.innerHTML = `<span>${word}</span><span class="text-sm text-blue-100 font-bold mt-1">${pinyin}</span>`;
+            newBtn.onclick = () => { ansDiv.removeChild(newBtn); btn.classList.remove('hidden'); builderSelectedWords = builderSelectedWords.filter(item => item.w !== word); };
+            ansDiv.appendChild(newBtn);
+
+            const q = questions[currentQuestionIndex];
+            if (builderSelectedWords.length === q.words.length) {
+                const userAns = builderSelectedWords.map(i => i.w).join('');
+                const correctAns = q.words.join('');
+                const isCorrect = userAns === correctAns;
+                recordHistory('Xếp câu', q.text, userAns, correctAns, isCorrect);
+                if (isCorrect) { handleCorrect(correctAns); setTimeout(() => { currentQuestionIndex++; loadQuestion(); }, 2000); } 
+                else { handleWrong(correctAns); }
+            }
+        }
+
+        function renderMatching(q, container) {
+            matchingSelected = null; matchingCompleted = 0; currentMatchingPairs = q.pairs;
+            let zhList = q.pairs.map(p => ({id: p.zh, text: p.zh, p: p.p, type: 'zh'})).sort(() => Math.random() - 0.5);
+            let viList = q.pairs.map(p => ({id: p.zh, text: p.vi, type: 'vi'})).sort(() => Math.random() - 0.5);
+
+            container.innerHTML = `
+                <div class="text-xs font-black text-purple-400 mb-8 tracking-widest uppercase bg-purple-50 inline-block px-4 py-2 rounded-full self-start">Nối Từ Cặp Đôi</div>
+                <div class="grid grid-cols-2 gap-6 md:gap-12 w-full max-w-4xl mx-auto flex-1">
+                    <div class="flex flex-col gap-4" id="match-col-1">
+                        ${zhList.map(item => `<button id="zh-${item.id}" onclick="selectMatch(this, '${item.id}', 'zh')" class="match-btn option-btn bg-white p-5 text-3xl font-black flex flex-col items-center h-full justify-center"><span>${item.text}</span><span class="text-base text-pink-400 mt-2">${item.p}</span></button>`).join('')}
+                    </div>
+                    <div class="flex flex-col gap-4" id="match-col-2">
+                        ${viList.map(item => `<button id="vi-${item.id}" onclick="selectMatch(this, '${item.id}', 'vi')" class="match-btn option-btn bg-white p-5 text-xl md:text-2xl font-black flex items-center justify-center h-full">${item.text}</button>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        function selectMatch(btn, id, type) {
+            if (btn.classList.contains('opacity-0')) return;
+            
+            if (matchingSelected && matchingSelected.el === btn) { 
+                btn.style.backgroundColor = "white"; btn.style.color = "#555"; btn.style.borderColor = "#fce7f3";
+                matchingSelected = null; return; 
+            }
+            
+            btn.style.backgroundColor = "#fff0f5"; btn.style.color = "#ff4757"; btn.style.borderColor = "#ff9a9e";
+            
+            if (!matchingSelected) { matchingSelected = { el: btn, id: id, type: type }; } 
+            else {
+                if (matchingSelected.type === type) { 
+                    matchingSelected.el.style.backgroundColor = "white"; matchingSelected.el.style.color = "#555"; matchingSelected.el.style.borderColor = "#fce7f3";
+                    matchingSelected = { el: btn, id: id, type: type }; return; 
+                }
+                
+                const isCorrect = matchingSelected.id === id;
+                const zhText = type === 'zh' ? id : matchingSelected.id; 
+                
+                if (isCorrect) {
+                    btn.style.backgroundColor = "#4facfe"; btn.style.color = "white"; btn.style.borderColor = "#4facfe";
+                    matchingSelected.el.style.backgroundColor = "#4facfe"; matchingSelected.el.style.color = "white"; matchingSelected.el.style.borderColor = "#4facfe";
+                    
+                    handleCorrect(zhText); 
+                    
+                    // Show small creepy smile overlay temporarily (Bonus detail)
+                    const smile = document.createElement('img');
+                    smile.src = 'imagesss.jpeg';
+                    smile.className = "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border-4 border-white shadow-2xl z-50 animate-[popIn_0.3s_ease-out]";
+                    document.getElementById('quiz-area').appendChild(smile);
+                    
+                    let el1 = matchingSelected.el; let el2 = btn;
+                    setTimeout(() => { 
+                        el1.classList.add('opacity-0', 'pointer-events-none'); 
+                        el2.classList.add('opacity-0', 'pointer-events-none'); 
+                        smile.remove();
+                    }, 800);
+                    
+                    matchingCompleted++; matchingSelected = null;
+                    if (matchingCompleted === 4) { 
+                        recordHistory('Nối từ', 'Hoàn thành 4 cặp từ', 'Đúng', 'Đúng', true); 
+                        setTimeout(() => { currentQuestionIndex++; loadQuestion(); }, 1200); 
+                    }
+                } else {
+                    btn.style.backgroundColor = "#ff4757"; btn.style.color = "white"; btn.style.borderColor = "#ff4757";
+                    matchingSelected.el.style.backgroundColor = "#ff4757"; matchingSelected.el.style.color = "white"; matchingSelected.el.style.borderColor = "#ff4757";
+                    btn.classList.add('shake'); matchingSelected.el.classList.add('shake');
+                    
+                    let pair = currentMatchingPairs.find(p => p.zh === matchingSelected.id || p.zh === id);
+                    let correctStr = `${pair.zh} (${pair.p}) = ${pair.vi}`;
+                    recordHistory('Nối từ', `Sai cặp: ${pair.zh}`, 'Sai', correctStr, false);
+                    setTimeout(() => handleWrong(correctStr), 400);
+                }
+            }
+        }
+        
+        function resetMatchingSelection() {
+            document.querySelectorAll('.match-btn').forEach(btn => {
+                if(!btn.classList.contains('opacity-0')) {
+                    btn.style.backgroundColor = "white";
+                    btn.style.color = "#555";
+                    btn.style.borderColor = "#fce7f3";
+                }
+            });
+            matchingSelected = null;
+        }
+
+        function endGame(isWin) {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('flex');
+            const endScreen = document.getElementById('end-screen');
+            endScreen.classList.remove('hidden');
+            endScreen.classList.add('flex');
+            
+            document.getElementById('final-score').innerText = score;
+            
+            if (isWin) {
+                document.getElementById('end-title').innerText = 'HOÀN THÀNH XUẤT SẮC!';
+                document.getElementById('end-title').className = 'absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-white px-10 py-4 rounded-[2rem] shadow-xl text-2xl md:text-3xl font-black uppercase tracking-widest whitespace-nowrap border-4 border-white';
+                document.getElementById('end-img').src = 'images-10.jpeg'; /* Anya smug waku waku */
+            } else {
+                document.getElementById('end-title').innerText = 'THI TRƯỢT RỒI...';
+                document.getElementById('end-title').className = 'absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-10 py-4 rounded-[2rem] shadow-xl text-2xl md:text-3xl font-black uppercase tracking-widest whitespace-nowrap border-4 border-white';
+                document.getElementById('end-img').src = 'images-9.jpeg'; /* Anya disgusted/crying */
+            }
+        }
+
+        function showReview() {
+            document.getElementById('end-screen').classList.add('hidden');
+            document.getElementById('end-screen').classList.remove('flex');
+            document.getElementById('review-screen').classList.remove('hidden');
+            document.getElementById('review-screen').classList.add('flex');
+            
+            const tbody = document.getElementById('review-list');
+            tbody.innerHTML = gameHistory.map((item, index) => `
+                <tr class="hover:bg-gray-50 transition duration-200">
+                    <td class="font-black text-pink-300 text-center text-xl">${index + 1}</td>
+                    <td><span class="px-3 py-1 bg-pink-100 text-pink-600 rounded-full text-xs font-black uppercase tracking-wider">${item.type}</span></td>
+                    <td class="font-bold text-gray-800 text-lg">${item.question}</td>
+                    <td class="${item.isCorrect ? 'text-teal-500' : 'text-red-400 line-through'} font-bold">${item.userAnswer}</td>
+                    <td class="text-teal-500 font-black">${item.correctAnswer}</td>
+                    <td class="text-2xl text-center">
+                        ${item.isCorrect ? '<img src="stella.jpg" class="w-8 h-8 rounded-full shadow-sm inline-block">' : '<img src="Tonitrus.png" class="w-8 h-8 inline-block object-contain">'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function closeReview() {
+            document.getElementById('review-screen').classList.add('hidden');
+            document.getElementById('review-screen').classList.remove('flex');
+            document.getElementById('end-screen').classList.remove('hidden');
+            document.getElementById('end-screen').classList.add('flex');
+        }
+    </script>
+</body>
+</html>
